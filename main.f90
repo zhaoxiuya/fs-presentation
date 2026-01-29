@@ -1,112 +1,107 @@
 PROGRAM MAIN
     IMPLICIT NONE
-    INTEGER, PARAMETER :: DP = KIND(1.0D0)
+    INTEGER, PARAMETER :: LL = SELECTED_INT_KIND(38)
 
-    INTEGER :: N, M, K, I, J
-    COMPLEX(DP), ALLOCATABLE :: X, Y
-    REAL(DP) :: TMP
+    INTEGER(LL) :: N, M, K, I, J, TMP, CNT, RET
+    INTEGER(LL), ALLOCATABLE :: X(:), Y(:)
+    INTEGER(LL) :: MODV = 9223372036737335297_LL, G = 3_LL
 
-    READ *, N
+    READ *, N, M
 
-    M = N * 2
-    K = 0
-    DO WHILE 0 < M
-        M = SHIFTR(M, 1)
-        K = K + 1
-    END DO
-    K = SHIFTL(1, K)
-
-    ALLOCATE(X(0:2*K-1))
-    ALLOCATE(Y(0:2*K-1))
-
-    DO I=0, N-1
-        READ *, TMP
-        X(I)    = (TMP, 0.0_DP)
-        X(I+N)  = (TMP, 0.0_DP)
+    K = 1
+    DO WHILE (K <= N+M)
+        K = K * 2
     END DO
 
-    DO I=0, N-1
-        READ *, TMP
-        Y(I)    = (TMP, 0.0_DP)
-        Y(I+N)  = (TMP, 0.0_DP)
+    ALLOCATE(X(0:K-1), Y(0:K-1))
+
+    X = 0_LL
+    Y = 0_LL
+
+    READ *, (X(I), I=0, N)
+    READ *, (Y(I), I=0, M)
+
+    CALL FFT(X, .FALSE.)
+    CALL FFT(Y, .FALSE.)
+    X = MODULO(X * Y, MODV)
+    CALL FFT(X, .TRUE.)
+
+    RET = 0_LL
+    DO I=0, N+M
+        RET = IEOR(RET, X(I))
     END DO
 
-    FFT(X, .FALSE.)
-    FFT(Y, .FALSE.)
-    DO I=0, K-1
-        X(I) = X(I) * Y(I)
-    END DO
-    FFT(X, .TRUE.)
+    PRINT "(I0)", RET
 
-    PRINT *, MAXVAL(NINT(REAL(X)))
+CONTAINS
+    SUBROUTINE FFT(V, INV)
+        IMPLICIT NONE
+        INTEGER, PARAMETER :: LL = SELECTED_INT_KIND(38)
 
-END PROGRAM MAIN
+        INTEGER(LL), INTENT(INOUT) :: V(0:)
+        LOGICAL, INTENT(IN) :: INV
+        INTEGER(LL) :: X, Y, WL, W
+        INTEGER(LL) :: MODV = 9223372036737335297_LL, G = 3_LL
+        INTEGER(LL) :: I, J, K, N, K2, STEP
 
-SUBROUTINE FFT(IV, INV)
-    IMPLICIT NONE
-    INTEGER, PARAMETER :: DP = KIND(1.0D0)
-    COMPLEX(DP), INTENT(INOUT), TARGET :: IV(:)
-    LOGICAL, INTENT(IN) :: INV
+        N = SIZE(V)
 
-    COMPLEX(DP), ALLOCATABLE :: TW(:)
-    COMPLEX(DP), POINTER :: V(:)
-    COMPLEX(DP) :: X, Y
-
-    INTEGER :: I, J, K, N, K2, STEP
-
-    REAL(DP) :: ANG
-    REAL(DP), PARAMETER :: PI = 3.14159265358979323846_DP
-
-    N = SIZE(IV)
-    V(0:N-1) => IV
-
-    ALLOCATE(TW(0:N/2-1))
-    DO I = 0, N / 2 - 1
-        ANG = 2.0_DP * ACOS(-1.0_DP) * I / N
-        IF (INV) ANG = -ANG
-        TW(I) = CMPLX(COS(ANG), SIN(ANG), DP)
-    END DO
-
-    J = 0
-    DO I = 1, N-1
-        K = SHIFTR(N, 1)
-        DO WHILE IAND(J, K) /= 0
-            J = IEOR(J, K)
-            K = SHIFTR(K, 1)
-        END DO
-        J = IEOR(J, K)
-        IF I < J THEN
-            W = V(I)
-            V(I) = V(J)
-            V(J) = W
-        END IF
-    END DO
-
-    K = 2
-    DO WHILE K <= N
-        K2 = SHIFTR(K, 1)
-        STEP = N / K
-
-        !$OMP PARALLEL DO PRIVATE(I,J,X,Y)
-        DO I = 0, N-1, K
-            !DIR$ SIMD
-            DO J = 0, K2-1
-                X = V(I + J)
-                Y = V(I + J + K2) * TW(J * STEP)
-                V(I + J)      = X + Y
-                V(I + J + K2) = X - Y
+        J = 0_LL
+        DO I = 1, N-1
+            K = SHIFTR(N, 1)
+            DO WHILE (IAND(J, K) /= 0)
+                J = IEOR(J, K)
+                K = SHIFTR(K, 1)
             END DO
+            J = IEOR(J, K)
+            IF (I < J) THEN
+                X = V(I)
+                V(I) = V(J)
+                V(J) = X
+            END IF
         END DO
-        !$OMP END PARALLEL DO
 
-        K = SHIFTL(K, 1)
-    END DO
-
-    IF INV THEN
-        DO I=0, N-1
-            V(I) = V(I) / REAL(N, DP)
+        K = 2_LL
+        DO WHILE (K <= N)
+            WL = POW(G, (MODV-1_LL)/K)
+            IF (INV) WL = POW(WL, MODV-2_LL)
+            K2 = SHIFTR(K, 1)
+            STEP = N / K
+            DO I = 0, N-1, K
+                W = 1_LL
+                DO J = 0, K2-1
+                    X = MODULO(V(I + J), MODV)
+                    Y = MODULO(V(I + J + K2) * W, MODV)
+                    V(I + J)      = MODULO(X + Y, MODV)
+                    V(I + J + K2) = MODULO(X - Y, MODV)
+                    W = MODULO(W * WL, MODV)
+                END DO
+            END DO
+            K = SHIFTL(K, 1_LL)
         END DO
-    END IF
 
-    DEALLOCATE(TW)
-END SUBROUTINE FFT
+        IF (INV) THEN
+            W = POW(N, MODV-2_LL)
+            DO I=0, N-1
+                V(I) = MODULO(V(I)*W, MODV)
+            END DO
+        END IF
+
+    END SUBROUTINE FFT
+
+    FUNCTION POW(BASE, EXP) RESULT(RET)
+        IMPLICIT NONE
+        INTEGER, PARAMETER :: LL = SELECTED_INT_KIND(38)
+        INTEGER(LL), INTENT(IN) :: BASE, EXP
+        INTEGER(LL) :: RET, B, E
+        INTEGER(LL) :: MODV = 9223372036737335297_LL, G = 3_LL
+        RET = 1_LL
+        B = MODULO(BASE, MODV)
+        E = EXP
+        DO WHILE (0_LL < E)
+            IF (MOD(E, 2_LL)==1_LL) RET = MODULO(RET * B, MODV)
+            B = MODULO(B*B, MODV)
+            E = E / 2_LL
+        END DO
+    END FUNCTION POW
+END PROGRAM MAIN
