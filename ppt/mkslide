@@ -1,0 +1,4 @@
+#!/bin/sh
+cd "$(dirname "$0")"
+manim -qh ./main.py MyPpt
+manim-slides convert MyPpt index.html
