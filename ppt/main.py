@@ -406,6 +406,8 @@ class MyPpt(Slide):
         dots = VGroup(ad, bd, cd, dd)
         self.play(Create(ad), Create(bd), Create(cd), Create(dd))
 
+        dota = dots
+
         self.next_slide()
 
         fpair = MathTex("{" + f"({aval}, {fx(aval)}),({bval}, {fx(bval)}),({cval}, {fx(cval)}),({dval}, {fx(dval)})" + "}").set_color(BLUE_C)
@@ -416,7 +418,7 @@ class MyPpt(Slide):
 
         cross = MathTex(r'\times').scale(3.0)
         cross.next_to(fpair, DOWN)
-        self.draw(Write(cross))
+        self.play(Write(cross))
 
         self.next_slide()
 
@@ -426,6 +428,8 @@ class MyPpt(Slide):
         dd = Dot(axes.c2p(dval, gx(dval)), color=WHITE,  radius=0.12)
         dots = VGroup(ad, bd, cd, dd)
         self.play(Create(ad), Create(bd), Create(cd), Create(dd))
+
+
 
         self.next_slide()
 
@@ -437,10 +441,6 @@ class MyPpt(Slide):
 
         junim = VGroup(gpair, fpair, cross)
 
-        eq = MathTex(r'=').scale(3.0)
-        eq.next_to(cross, DOWN)
-        self.draw(Write(eq))
-
         self.next_slide()
 
         fgx = fg
@@ -448,20 +448,16 @@ class MyPpt(Slide):
         bd = Dot(axes.c2p(bval, fgx(bval)), color=WHITE,  radius=0.12)
         cd = Dot(axes.c2p(cval, fgx(cval)), color=WHITE,  radius=0.12)
         dd = Dot(axes.c2p(dval, fgx(dval)), color=WHITE,  radius=0.12)
-        dots = VGroup(ad, bd, cd, dd)
+        dot2 = VGroup(ad, bd, cd, dd)
         self.play(Create(ad), Create(bd), Create(cd), Create(dd))
 
         self.next_slide()
 
         fgpair = MathTex("{" + f"({aval}, {fgx(aval)}),({bval}, {fgx(bval)}),({cval}, {fgx(cval)}),({dval}, {fgx(dval)})" + "}")
-        fgpair.next_to(eq, DOWN)
-        self.play(Transform(dots, fgpair))
+        fgpair.move_to(ORIGIN)
 
-        self.next_slide()
-
-        self.play(FadeOut(fgraph, ggraph, fggraph))
-        self.play(junim.animate.move_to(ORIGIN))
-        self.play(eq.animate.move_to(ORIGIN))
-        self.play(fgpair.animate.move_to(ORIGIN))
+        ajunim = VGroup(dot2, junim)
+        self.play(Transform(ajunim, fgpair), )
+        self.play(FadeOut(fgraph, fggraph, ggraph, fpair, gpair, h, dots, dota))
 
         self.next_slide()
