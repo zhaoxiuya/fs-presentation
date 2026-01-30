@@ -1,0 +1,4 @@
+.direnv
+media
+.envrc
+*/__pycache__

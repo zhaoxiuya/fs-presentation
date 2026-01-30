@@ -1,3 +1,13 @@
-import myfft
+from manim import *
 
-print(myfft.FFT([10, 2, 3], true))
+class SquareToCircle(Scene):
+    def construct(self):
+        square = Square(color=BLUE, fill_opacity=0.5)
+        self.play(Create(square))
+        self.wait(1)
+
+        circle = Circle(color=RED, fill_opacity=0.5)
+        self.play(Transform(square, circle))
+        self.wait(1)
+
+        self.play(FadeOut(square))
