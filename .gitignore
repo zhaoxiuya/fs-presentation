@@ -1,4 +1,6 @@
 .direnv
-media
 .envrc
 */__pycache__
+*/media
+slides
+index_assets
