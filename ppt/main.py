@@ -58,8 +58,8 @@ class MyPpt(Slide):
     def show_multiply(self):
         a_str, b_str = "260131", "091227"
 
-        a = VGroup(*[Text(i) for i in a_str]).arrange(RIGHT, buff=0.2)
-        b = VGroup(*[Text(i) for i in b_str]).arrange(RIGHT, buff=0.2)
+        a = VGroup(*[MathTex(i) for i in a_str]).arrange(RIGHT, buff=0.2)
+        b = VGroup(*[MathTex(i) for i in b_str]).arrange(RIGHT, buff=0.2)
         b.next_to(a, DOWN, aligned_edge=RIGHT)
 
         x = MathTex(r"\times").next_to(b, LEFT).scale(self.MZ)
@@ -74,39 +74,76 @@ class MyPpt(Slide):
             tmp = str(int(b_str[i])*int(a_str))
             if len(tmp) < len(b_str):
                 tmp = "0"*(len(b_str)-len(tmp)) + tmp
-            l[i] = VGroup(*[Text(x) for x in tmp]).arrange(RIGHT, buff=0.2)
+            l[i] = VGroup(*[MathTex(x) for x in tmp]).arrange(RIGHT, buff=0.2)
         l += [b]
 
         for i in range(len(b_str))[::-1]:
             l[i].next_to(l[i+1], DOWN, aligned_edge=RIGHT)
             self.play(b[i].animate.set_color(RED))
             if i!=len(b_str)-1:
-                l[i].shift(LEFT * 0.5)
+                l[i].shift(LEFT * 0.4)
             for j in range(len(b_str))[::-1]:
                 self.play(a[j].animate.set_color(BLUE),run_time=0.15)
                 if(len(b_str)<len(l[i])):
                     if j == 0:
-                        self.play(l[i][j+1].animate.set_color(GOLD),run_time=0.15)
-                        self.play(FadeIn(l[i][j+1]),run_time=0.15)
-                        self.play(l[i][j+1].animate.set_color(WHITE),run_time=0.15)
-                        self.play(l[i][j].animate.set_color(GOLD),run_time=0.15)
-                        self.play(FadeIn(l[i][j]),run_time=0.15)
-                        self.play(l[i][j].animate.set_color(WHITE),run_time=0.15)
+                        self.play(Write(l[i][j+1].set_color(GOLD)),run_time=0.15)
+                        l[i][j+1].set_color(WHITE)
+                        self.play(Write(l[i][j].set_color(GOLD)),run_time=0.15)
+                        l[i][j].set_color(WHITE)
                     else:
-                        self.play(l[i][j+1].animate.set_color(GOLD),run_time=0.15)
-                        self.play(FadeIn(l[i][j+1]),run_time=0.15)
-                        self.play(l[i][j+1].animate.set_color(WHITE),run_time=0.15)
+                        self.play(Write(l[i][j+1].set_color(GOLD)),run_time=0.15)
+                        l[i][j+1].set_color(WHITE)
                 else:
-                    self.play(l[i][j].animate.set_color(GOLD),run_time=0.15)
-                    self.play(FadeIn(l[i][j]), run_time=0.15)
-                    self.play(l[i][j].animate.set_color(WHITE),run_time=0.15)
+                    self.play(Write(l[i][j].set_color(GOLD)),run_time=0.15)
+                    l[i][j].set_color(WHITE)
                 self.play(a[j].animate.set_color(WHITE),run_time=0.15)
             self.play(b[i].animate.set_color(WHITE),run_time=0.15)
 
+        self.next_slide()
 
-        line2 = (Line(LEFT, RIGHT).set_width(2 * a.width + 0.8).next_to(l[0], DOWN, buff=0.1, aligned_edge=RIGHT).align_to(b, RIGHT))
-        plus = MathTex(r"+").next_to(b, LEFT).scale(self.MZ)
+        plus = MathTex(r"+").scale(self.MZ)
+        plus.next_to(l[0][0], LEFT, buff=0.3)
 
-        setup2 = VGroup(plus, line2).to_edge(UP, buff=0.5)
-        self.play(Write(setup2))
+        line2 = Line(LEFT, RIGHT)
+        line2.set_width(line.width * 2)
+        line2.next_to(l[0], DOWN, buff=0.1)
+        line2.align_to(line, RIGHT)
+
+        self.play(Write(VGroup(plus, line2)))
+        self.next_slide()
+
+        c_str = str(int(a_str) * int(b_str))
+        c = VGroup(*[MathTex(i) for i in c_str]).arrange(RIGHT, buff=0.2)
+        c.next_to(line2, DOWN, buff=0.25)
+        c.align_to(b, RIGHT)
+
+        for i in range(len(c_str))[::-1]:
+            for j in range(len(b_str)):
+                if(len(a_str)<len(l[j])):
+                    for k in range(len(a_str)):
+                        if j + k == i:
+                            self.play(l[j][k+1].animate.set_color(RED), run_time=0.1)
+                        if j + k-1 == i and k==0:
+                                self.play(l[j][k].animate.set_color(RED), run_time=0.1)
+                else:
+                    for k in range(len(a_str)):
+                        if j + k == i:
+                            self.play(l[j][k].animate.set_color(RED), run_time=0.1)
+
+            self.play(Write(c[i].set_color(GOLD)),run_time=0.15)
+            c[i].set_color(WHITE)
+
+            for j in range(len(b_str)):
+                if(len(a_str)<len(l[j])):
+                    for k in range(len(a_str)):
+                        if j + k == i:
+                            self.play(l[j][k+1].animate.set_color(WHITE), run_time=0.1)
+                        if j + k-1 == i and k==0:
+                           self.play(l[j][k].animate.set_color(WHITE), run_time=0.1)
+                else:
+                    for k in range(len(a_str)):
+                        if j + k == i:
+                            self.play(l[j][k].animate.set_color(WHITE), run_time=0.1)
+
+
         self.next_slide()
