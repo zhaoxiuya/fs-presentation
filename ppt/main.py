@@ -353,4 +353,76 @@ class MyPpt(Slide):
         self.play(Create(fggraph), run_time=1)
         self.next_slide()
 
-        self.play(FadeOut(fgraph, fggraph))
+        self.play(FadeOut(fgraph, ggraph, fggraph))
+
+        aval = -1
+        bval = -2
+        cval = -3
+        dval = 0
+
+        ad = Dot(axes.c2p(aval, gx(aval)), color=WHITE,  radius=0.12)
+        bd = Dot(axes.c2p(bval, gx(bval)), color=WHITE,  radius=0.12)
+        self.play(Create(ad), Create(bd))
+
+        self.next_slide()
+        self.play(Write(ggraph))
+
+        self.play(FadeOut(ad, ggraph, bd))
+        self.next_slide()
+
+        ad = Dot(axes.c2p(aval, fx(aval)), color=WHITE,  radius=0.12)
+        bd = Dot(axes.c2p(bval, fx(bval)), color=WHITE,  radius=0.12)
+        cd = Dot(axes.c2p(cval, fx(cval)), color=WHITE,  radius=0.12)
+        self.play(Create(ad), Create(bd), Create(cd))
+
+        self.next_slide()
+        self.play(Write(fgraph))
+
+        self.play(FadeOut(ad, fgraph, bd, cd))
+        self.next_slide()
+
+        self.play(FadeOut(ad, fgraph, bd, cd))
+
+        self.next_slide()
+
+        self.play(FadeOut(f, g))
+
+        alg = VGroup(axes, fgraph, ggraph)
+        alg.shift(LEFT*3)
+
+        self.play(Write(fgraph), Write(ggraph), Write(fggraph))
+
+        h = MathTex(r"h(x) = 2x^3 + 9x^2 + 13x + 6")
+        h.to_edge(DR)
+
+        self.play(Write(h))
+
+        self.next_slide()
+
+        ad = Dot(axes.c2p(aval, fx(aval)), color=WHITE,  radius=0.12)
+        bd = Dot(axes.c2p(bval, fx(bval)), color=WHITE,  radius=0.12)
+        cd = Dot(axes.c2p(cval, fx(cval)), color=WHITE,  radius=0.12)
+        dd = Dot(axes.c2p(dval, fx(dval)), color=WHITE,  radius=0.12)
+        dots = VGroup(ad, bd, cd, dd)
+        self.play(Create(ad), Create(bd), Create(cd), Create(dd))
+
+        self.next_slide()
+
+        fpair = MathTex("{" + f"({aval}, {fx(aval)}),({bval}, {fx(bval)}),({cval}, {fx(cval)}),({dval}, {fx(dval)})" + "}").set_color(BLUE_C)
+        fpair.to_edge(UR)
+        self.play(Transform(dots, fpair))
+
+        self.next_slide()
+
+        ad = Dot(axes.c2p(aval, fx(aval)), color=WHITE,  radius=0.12)
+        bd = Dot(axes.c2p(bval, fx(bval)), color=WHITE,  radius=0.12)
+        cd = Dot(axes.c2p(cval, fx(cval)), color=WHITE,  radius=0.12)
+        dd = Dot(axes.c2p(dval, fx(dval)), color=WHITE,  radius=0.12)
+        dots = VGroup(ad, bd, cd, dd)
+        self.play(Create(ad), Create(bd), Create(cd), Create(dd))
+
+        self.next_slide()
+
+        gpair = MathTex("{" + f"({aval}, {gx(aval)}),({bval}, {gx(bval)}),({cval}, {gx(cval)}),({dval}, {gx(dval)})" + "}").set_color(RED_C)
+        gpair.to_edge(UR)
+        self.play(Transform(dots, gpair))
