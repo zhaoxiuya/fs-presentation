@@ -23,6 +23,16 @@
       {
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
+            meson
+            ninja
+            gcc
+            ffmpeg
+            cairo
+            pango
+            librsvg
+            manim
+            manim-slides
+            texlive.combined.scheme-full
             gfortran15
             hpkgs.ghc
             py.numpy
