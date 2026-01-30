@@ -11,7 +11,10 @@ class MyPpt(Slide):
         # self.show_intro()
         # self.show_index()
         # self.show_gopsem()
-        self.show_multiply()
+        # self.show_multiply()
+        # self.show_poly()
+        # self.show_numol()
+        self.show_poly_n()
 
     def show_intro(self):
         title = Text("제임스와 존의 곱셈의 비밀").scale(self.BZ)
@@ -147,3 +150,207 @@ class MyPpt(Slide):
 
 
         self.next_slide()
+
+    def show_poly(self):
+        expr = MathTex("(x^2 + 3x + 2)(2x + 3)", substrings_to_isolate=["x^2", "3x", " 2", "2x", "3"]).center()
+        expr.set_color_by_tex("2x", RED_C)
+        expr.set_color_by_tex(" 2", BLUE_C)
+        expr.set_color_by_tex("3", RED_C)
+        expr.set_color_by_tex("3x", BLUE_C)
+        expr.set_color_by_tex("x^2", BLUE_C)
+        expr.set_color_by_tex("2x", RED_C)
+
+        expr.to_edge(UP)
+        self.play(Write(expr))
+        self.next_slide()
+
+        self.play(expr.animate.to_edge(UP))
+        self.next_slide()
+
+        row = ["x^2", "3x", "2"]
+        col = ["2x", "3"]
+
+        table = [
+            [("2x^3"), ("3x^2")],
+            [("6x^2"), ("9x")],
+            [("4x"), ("6")],
+        ]
+
+        table = Table(
+            table,
+            row_labels=[MathTex(t) for t in row],
+            col_labels=[MathTex(t) for t in col],
+            top_left_entry=MathTex(r"\times"),
+            include_outer_lines=True,
+            element_to_mobject=MathTex,
+            h_buff=1.6,
+            v_buff=1.2,
+        )
+
+        row_colors = [BLUE_C, BLUE_C, BLUE_C]
+        col_colors = [RED_C, RED_C]
+
+        for i, color in enumerate(row_colors):
+            table.get_row_labels()[i].set_color(color)
+
+        for j, color in enumerate(col_colors):
+            table.get_col_labels()[j].set_color(color)
+
+        table.scale(0.8)
+        table.next_to(expr, DOWN, buff=0.8)
+
+        self.play(FadeIn(table))
+        self.next_slide()
+
+        self.play(table.animate.shift(LEFT*3.5))
+
+        expr2 = MathTex("= 2x^3 + 9x^2 + 13x + 6")
+        expr2.next_to(table, buff=0.8)
+        self.play(Write(expr2))
+
+        self.next_slide()
+
+        self.play(FadeOut(expr2, expr, table))
+
+        expr = VGroup(expr, expr2).arrange(RIGHT, buff=0.3)
+
+        self.play(Write(expr))
+
+        self.next_slide()
+
+        self.play(FadeOut(expr))
+
+    def show_numol(self):
+        axpr = MathTex("(x^2 + 3x + 2)(2x + 3)", substrings_to_isolate=["x^2", "3x", " 2", "2x", "3"]).center()
+        axpr.set_color_by_tex("2x", RED_C)
+        axpr.set_color_by_tex(" 2", BLUE_C)
+        axpr.set_color_by_tex("3", RED_C)
+        axpr.set_color_by_tex("3x", BLUE_C)
+        axpr.set_color_by_tex("x^2", BLUE_C)
+        axpr.set_color_by_tex("2x", RED_C)
+        axpr.to_corner(UL)
+        axpr = VGroup(axpr, MathTex("= 2x^3 + 9x^2 + 13x + 6")).arrange(RIGHT, buff=0.3)
+
+        expr = MathTex(r"132 \times 23", substrings_to_isolate=["132", "23"]).center()
+        expr.set_color_by_tex("132", BLUE_C)
+        expr.set_color_by_tex("23", RED_C)
+
+        expr.to_edge(UP)
+        self.play(Write(expr))
+        self.next_slide()
+
+        self.play(expr.animate.to_edge(UP))
+        self.next_slide()
+
+        row = ["1", "3", "2"]
+        col = ["2", "3"]
+
+        table = [
+            [("2"), ("3")],
+            [("6"), ("9")],
+            [("4"), ("6")],
+        ]
+
+        table = Table(
+            table,
+            row_labels=[MathTex(t) for t in row],
+            col_labels=[MathTex(t) for t in col],
+            top_left_entry=MathTex(r"\times"),
+            include_outer_lines=True,
+            element_to_mobject=MathTex,
+            h_buff=1.6,
+            v_buff=1.2,
+        )
+
+        row_colors = [BLUE_C, BLUE_C, BLUE_C]
+        col_colors = [RED_C, RED_C]
+
+        for i, color in enumerate(row_colors):
+            table.get_row_labels()[i].set_color(color)
+
+        for j, color in enumerate(col_colors):
+            table.get_col_labels()[j].set_color(color)
+
+        table.scale(0.8)
+        table.next_to(expr, DOWN, buff=0.8)
+
+        self.play(FadeIn(table))
+        self.next_slide()
+
+        self.play(table.animate.shift(LEFT*3.5))
+
+        expr2 = MathTex(r"= 2 \times 1000 + 9 \times 100 + 13 \times 10 + 6")
+        expr2.next_to(table, buff=0.8)
+        self.play(Write(expr2))
+        self.next_slide()
+        adad = MathTex(r" = 3036").center()
+        adad.next_to(table, buff=0.8)
+        self.play(Transform(expr2, adad))
+
+        self.next_slide()
+
+        self.play(FadeOut(expr2, expr, table))
+
+        expr = VGroup(expr, expr2).arrange(RIGHT, buff=0.3)
+
+        self.play(Write(expr))
+
+        self.next_slide()
+
+        self.play(expr.animate.to_corner(DR))
+        adad = MathTex(r"132 \times 23 = 3036", substrings_to_isolate=["132", "23"]).center()
+        adad.set_color_by_tex("132", BLUE_C)
+        adad.set_color_by_tex("23", RED_C)
+        adad.to_corner(DR)
+        self.play(Transform(expr, adad))
+
+        self.next_slide()
+
+        self.play(Write(axpr))
+
+        self.play(axpr.animate.to_corner(UL))
+
+        self.next_slide()
+
+        app = MathTex(r'\approx').scale(3.0).center()
+        self.play(Write(app))
+
+        self.next_slide()
+
+        self.play(FadeOut(app, expr, axpr))
+
+        self.next_slide()
+
+    def show_poly_n(self):
+        f = MathTex(r"f(x) = x^2 + 3x + 2").set_color(BLUE_C)
+        f.to_edge(UR)
+        g = MathTex(r"g(x) = 2x + 3").set_color(RED_C)
+        g.to_edge(DR)
+        self.play(Write(f), Write(g))
+        self.next_slide()
+
+        axes = Axes(
+            x_range=[-5, 5, 1],
+            y_range=[-5, 5, 1],
+            x_length=10,
+            tips=True,
+        )
+        axes.to_corner(DOWN)
+        self.next_slide()
+
+        fx = lambda x: x**2+3*x+2
+        gx = lambda x: 2*x+ 3
+        fg = lambda x: (x**2+3*x+2) * (2*x+ 3)
+
+        fgraph = axes.plot(fx, color=BLUE, x_range=[-5, 5]).set_color(BLUE_C)
+        ggraph = axes.plot(gx, color=BLUE, x_range=[-5, 5]).set_color(RED_C)
+        fggraph = axes.plot(fg, color=BLUE, x_range=[-5, 5]).set_color(WHITE)
+
+        self.play(Create(fgraph), run_time=1)
+        self.next_slide()
+        self.play(Create(ggraph), run_time=1)
+        self.next_slide()
+        self.play(Create(fggraph), run_time=1)
+        self.next_slide()
+
+        self.play(FadeOut(fgraph, fggraph))
