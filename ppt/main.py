@@ -387,7 +387,7 @@ class MyPpt(Slide):
 
         self.play(FadeOut(f, g))
 
-        alg = VGroup(axes, fgraph, ggraph)
+        alg = VGroup(axes, fgraph, ggraph, fggraph)
         alg.shift(LEFT*3)
 
         self.play(Write(fgraph), Write(ggraph), Write(fggraph))
@@ -414,15 +414,54 @@ class MyPpt(Slide):
 
         self.next_slide()
 
-        ad = Dot(axes.c2p(aval, fx(aval)), color=WHITE,  radius=0.12)
-        bd = Dot(axes.c2p(bval, fx(bval)), color=WHITE,  radius=0.12)
-        cd = Dot(axes.c2p(cval, fx(cval)), color=WHITE,  radius=0.12)
-        dd = Dot(axes.c2p(dval, fx(dval)), color=WHITE,  radius=0.12)
+        cross = MathTex(r'\times').scale(3.0)
+        cross.next_to(fpair, DOWN)
+        self.draw(Write(cross))
+
+        self.next_slide()
+
+        ad = Dot(axes.c2p(aval, gx(aval)), color=WHITE,  radius=0.12)
+        bd = Dot(axes.c2p(bval, gx(bval)), color=WHITE,  radius=0.12)
+        cd = Dot(axes.c2p(cval, gx(cval)), color=WHITE,  radius=0.12)
+        dd = Dot(axes.c2p(dval, gx(dval)), color=WHITE,  radius=0.12)
         dots = VGroup(ad, bd, cd, dd)
         self.play(Create(ad), Create(bd), Create(cd), Create(dd))
 
         self.next_slide()
 
         gpair = MathTex("{" + f"({aval}, {gx(aval)}),({bval}, {gx(bval)}),({cval}, {gx(cval)}),({dval}, {gx(dval)})" + "}").set_color(RED_C)
-        gpair.to_edge(UR)
+        gpair.next_to(cross, DOWN)
         self.play(Transform(dots, gpair))
+
+        self.next_slide()
+
+        junim = VGroup(gpair, fpair, cross)
+
+        eq = MathTex(r'=').scale(3.0)
+        eq.next_to(cross, DOWN)
+        self.draw(Write(eq))
+
+        self.next_slide()
+
+        fgx = fg
+        ad = Dot(axes.c2p(aval, fgx(aval)), color=WHITE,  radius=0.12)
+        bd = Dot(axes.c2p(bval, fgx(bval)), color=WHITE,  radius=0.12)
+        cd = Dot(axes.c2p(cval, fgx(cval)), color=WHITE,  radius=0.12)
+        dd = Dot(axes.c2p(dval, fgx(dval)), color=WHITE,  radius=0.12)
+        dots = VGroup(ad, bd, cd, dd)
+        self.play(Create(ad), Create(bd), Create(cd), Create(dd))
+
+        self.next_slide()
+
+        fgpair = MathTex("{" + f"({aval}, {fgx(aval)}),({bval}, {fgx(bval)}),({cval}, {fgx(cval)}),({dval}, {fgx(dval)})" + "}")
+        fgpair.next_to(eq, DOWN)
+        self.play(Transform(dots, fgpair))
+
+        self.next_slide()
+
+        self.play(FadeOut(fgraph, ggraph, fggraph))
+        self.play(junim.animate.move_to(ORIGIN))
+        self.play(eq.animate.move_to(ORIGIN))
+        self.play(fgpair.animate.move_to(ORIGIN))
+
+        self.next_slide()
