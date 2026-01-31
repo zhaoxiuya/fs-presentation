@@ -687,3 +687,8 @@ class MyPpt(Slide, MovingCameraScene):
         vec = MobjectMatrix(data).scale(0.7)
 
         self.next_slide()
+
+        img = ImageMobject(f"./assets/qr.png")
+        self.play(img)
+
+        self.next_slide()
