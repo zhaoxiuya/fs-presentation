@@ -1,8 +1,9 @@
 from manim import *
 from manim_slides import *
 import numpy as np
+import math
 
-class MyPpt(Slide):
+class MyPpt(Slide, MovingCameraScene):
     BZ = 1.5
     MZ = 1.0
     SZ = 0.5
@@ -14,7 +15,9 @@ class MyPpt(Slide):
         # self.show_multiply()
         # self.show_poly()
         # self.show_numol()
-        self.show_poly_n()
+        # self.show_poly_n()
+        # self.show_complex()
+        self.show_fft()
 
     def show_intro(self):
         title = Text("제임스와 존의 곱셈의 비밀").scale(self.BZ)
@@ -28,7 +31,7 @@ class MyPpt(Slide):
         self.next_slide()
 
     def show_index(self):
-        mokcha_list = [ "곱셈이란?", "빠른 곱셈의 비결", "시계나라의 숫자들", "시연"]
+        mokcha_list = [ "곱셈이란?", "시계나라의 숫자들", "빠른 곱셈의 비결", "시연"]
         mokcha = VGroup()
         for i, text in enumerate(mokcha_list):
             dot = Dot().scale(self.MZ)
@@ -461,3 +464,56 @@ class MyPpt(Slide):
         self.play(FadeOut(fgraph, fggraph, ggraph, fpair, gpair, h, dots, dota))
 
         self.next_slide()
+
+    def show_complex(self):
+        plane = ComplexPlane(
+            x_range=[-10, 10, 1],
+            y_range=[-10, 10, 1],
+        ).add_coordinates()
+
+        self.play(Create(plane))
+
+        self.next_slide()
+
+        self.play(
+            self.camera.frame.animate.set(width=6).move_to(Dot(plane.n2p(0+0j))),
+            run_time=2
+        )
+
+        self.next_slide()
+
+        z =  0+1j
+        vec = Arrow(start=plane.n2p(0), end=plane.n2p(z), buff=0, color=YELLOW)
+        self.play(GrowArrow(vec))
+        self.next_slide()
+        for i in range(4):
+            nz = z * 1j
+            self.play(Rotate(vec, angle=PI/2, about_point=plane.n2p(0)))
+            z = nz
+            self.next_slide()
+
+        self.next_slide()
+
+        self.play(FadeOut(vec))
+
+        z =  math.sqrt(2)/2+math.sqrt(2)/2*1j
+        vec = Arrow(start=plane.n2p(0), end=plane.n2p(z), buff=0, color=YELLOW)
+        self.play(GrowArrow(vec))
+        self.next_slide()
+        for i in range(8):
+            nz = z * 1j
+            self.play(Rotate(vec, angle=PI/4, about_point=plane.n2p(0)), run_time=1.5)
+            z = nz
+            self.wait(0.5)
+        self.next_slide()
+        label = MathTex("w_8").next_to(vec.get_end(), UR).set_color(YELLOW)
+        self.play(Write(label))
+        self.next_slide()
+
+        self.play(FadeOut(vec,label,plane))
+
+    def show_fft(self):
+        data = [[MathTex(fr"w_{(i*j)%8}") for j in range(8)] for i in range(8)]
+        mat = MobjectMatrix(data)
+
+        self.play(Write(mat))
