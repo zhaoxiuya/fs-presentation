@@ -610,9 +610,17 @@ class MyPpt(Slide, MovingCameraScene):
 
         self.next_slide()
 
-        data = [[(MathTex(fr"w_8^{(i)%8}") if i==j else MathTex(0)) for j in range(4)] for i in range(4)]
-        MobjectMatrix(data).scale(0.7).center()
+        self.play(FadeOut(VGroup(mat, vec)))
 
+        data = [[(MathTex(fr"w_8^{(i)%8}") if i==j else MathTex(0)) for j in range(4)] for i in range(4)]
+        m = MobjectMatrix(data).scale(0.7).center()
+        head.move_to(TOP)
+        self.play(Write(m))
+
+        self.next_slide()
+
+        self.play(FadeOut(m))
+        self.play(Write(VGroup(mat, vec)))
 
         self.next_slide()
 
