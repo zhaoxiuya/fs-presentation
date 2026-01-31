@@ -681,4 +681,9 @@ class MyPpt(Slide, MovingCameraScene):
 
         self.next_slide()
 
+        data = [[MathTex("W_e"),MathTex("W_e")],[MathTex("M_4 W_e"),MathTex("-M_4 W_e")]]
+        mat = MobjectMatrix(data).scale(0.7)
+        data = [[MathTex("A_e")],[MathTex("A_o")]]
+        vec = MobjectMatrix(data).scale(0.7)
+
         self.next_slide()
