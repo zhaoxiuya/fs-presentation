@@ -513,7 +513,135 @@ class MyPpt(Slide, MovingCameraScene):
         self.play(FadeOut(vec,label,plane))
 
     def show_fft(self):
-        data = [[MathTex(fr"w_{(i*j)%8}") for j in range(8)] for i in range(8)]
-        mat = MobjectMatrix(data)
+        tmptex = MathTex("f(X) = ")
+        self.play(Write(tmptex))
 
+        self.next_slide()
+
+        self.play(FadeOut(tmptex))
+
+        data = [[MathTex(fr"w_8^{(i*j)%8}") for j in range(8)] for i in range(8)]
+        mat = MobjectMatrix(data).scale(0.7)
+        data = [[MathTex(fr"x_{i}") for j in range(1)] for i in range(8)]
+        vec = MobjectMatrix(data).scale(0.7)
+        vec.next_to(mat)
+
+        VGroup(mat, vec).center()
         self.play(Write(mat))
+
+        TOP = UP*3
+
+        self.next_slide()
+
+        head = MathTex('W').scale(3.0).set_color(YELLOW)
+        head.move_to(TOP)
+        self.play(Write(head))
+
+        self.next_slide()
+
+        self.play(FadeOut(head))
+        self.play(FadeOut(mat))
+        self.play(Write(vec))
+
+        self.next_slide()
+
+        head = MathTex('X').scale(3.0).set_color(YELLOW)
+        head.move_to(TOP)
+        self.play(Write(head))
+
+        self.next_slide()
+
+        self.play(FadeOut(head))
+
+        self.next_slide()
+        self.play(Write(mat))
+
+        for i in range(0, 8, 2):
+            for j in range(0, 8):
+                mat.get_rows()[j][i].set_color(YELLOW)
+            vec.get_rows()[i].set_color(YELLOW)
+        self.play(Transform(mat, mat), Transform(vec, vec))
+
+        self.next_slide()
+
+        data = [[MathTex(fr"w_8^{(i*j)%8}") for j in [0,2,4,6,1,3,5,7]] for i in range(8)]
+        mat2 = MobjectMatrix(data).scale(0.7)
+        data = [[MathTex(fr"x_{i}") for j in range(1)] for i in [0,2,4,6,1,3,5,7]]
+        vec2 = MobjectMatrix(data).scale(0.7)
+        vec2.next_to(mat2)
+        VGroup(mat2, vec2).center()
+
+        self.play(Transform(mat, mat2), Transform(vec, vec2))
+
+        self.next_slide()
+
+        tmp1 = []
+        tmp2 = []
+        tmp3 = []
+        tmp4 = []
+        for i in range(4):
+            for j in range(4):
+                tmp3.append(mat.get_rows()[i+4][j])
+                tmp2.append(mat.get_rows()[i][j])#
+                tmp1.append(mat.get_rows()[i][j+4])
+                tmp4.append(mat.get_rows()[i+4][j+4])
+        tmp1 = VGroup(*tmp1)
+        tmp2 = VGroup(*tmp2)
+        tmp3 = VGroup(*tmp3)
+        tmp4 = VGroup(*tmp4)
+
+        hb0 = SurroundingRectangle(tmp3, color=BLUE, buff=0.1)
+        hb1 = SurroundingRectangle(tmp2, color=BLUE, buff=0.1)
+
+        self.play(Create(hb0))
+        self.play(Create(hb1))
+
+        self.next_slide()
+
+        head = MathTex('W_e').scale(3.0).set_color(BLUE)
+        head.move_to(TOP)
+        self.play(Write(head))
+
+        self.next_slide()
+
+        self.play(FadeOut(head))
+        self.play(FadeOut(hb0))
+        self.play(FadeOut(hb1))
+
+        self.next_slide()
+
+        data = [[(MathTex(fr"w_8^{(i)%8}") if i==j else MathTex(0)) for j in range(4)] for i in range(4)]
+        MobjectMatrix(data).scale(0.7).center()
+
+
+        self.next_slide()
+
+        hb0 = SurroundingRectangle(tmp1, color=RED, buff=0.1)
+        self.play(Create(hb0))
+        head = MathTex('M_4 W_e').scale(3.0).set_color(RED)
+        head.move_to(TOP)
+        self.play(Write(head))
+
+
+        self.next_slide()
+
+        self.play(FadeOut(head))
+        self.play(FadeOut(hb0))
+
+        self.next_slide()
+
+        hb0 = SurroundingRectangle(tmp4, color=RED, buff=0.1)
+        self.play(Create(hb0))
+        head = MathTex('-M_4 W_e').scale(3.0).set_color(RED)
+        head.move_to(TOP)
+        self.play(Write(head))
+
+        self.next_slide()
+
+        self.play(FadeOut(head))
+        self.play(FadeOut(hb0))
+
+        self.next_slide()
+
+        FadeOut(mat)
+        hb0 = SurroundingRectangle(vec, color=BLUE, buff=0.1)
