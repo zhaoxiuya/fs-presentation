@@ -9,14 +9,14 @@ class MyPpt(Slide, MovingCameraScene):
     SZ = 0.5
 
     def construct(self):
-        # self.show_intro()
-        # self.show_index()
-        # self.show_gopsem()
-        # self.show_multiply()
-        # self.show_poly()
-        # self.show_numol()
-        # self.show_poly_n()
-        # self.show_complex()
+        self.show_intro()
+        self.show_index()
+        self.show_gopsem()
+        self.show_multiply()
+        self.show_poly()
+        self.show_numol()
+        self.show_poly_n()
+        self.show_complex()
         self.show_fft()
 
     def show_intro(self):
@@ -151,6 +151,15 @@ class MyPpt(Slide, MovingCameraScene):
                         if j + k == i:
                             self.play(l[j][k].animate.set_color(WHITE), run_time=0.1)
 
+        self.next_slide()
+
+        self.play(FadeOut(line, line2, plus, x, a, b))
+
+        self.play(FadeOut(c))
+
+        for i in l:
+            for j in i:
+                self.play(FadeOut(j))
 
         self.next_slide()
 
@@ -324,6 +333,10 @@ class MyPpt(Slide, MovingCameraScene):
 
         self.next_slide()
 
+
+
+        self.next_slide()
+
     def show_poly_n(self):
         f = MathTex(r"f(x) = x^2 + 3x + 2").set_color(BLUE_C)
         f.to_edge(UR)
@@ -432,8 +445,6 @@ class MyPpt(Slide, MovingCameraScene):
         dots = VGroup(ad, bd, cd, dd)
         self.play(Create(ad), Create(bd), Create(cd), Create(dd))
 
-
-
         self.next_slide()
 
         gpair = MathTex("{" + f"({aval}, {gx(aval)}),({bval}, {gx(bval)}),({cval}, {gx(cval)}),({dval}, {gx(dval)})" + "}").set_color(RED_C)
@@ -462,6 +473,10 @@ class MyPpt(Slide, MovingCameraScene):
         ajunim = VGroup(dot2, junim)
         self.play(Transform(ajunim, fgpair), )
         self.play(FadeOut(fgraph, fggraph, ggraph, fpair, gpair, h, dots, dota))
+
+        self.next_slide()
+
+        self.play(FadeOut(ajunim))
 
         self.next_slide()
 
@@ -511,6 +526,10 @@ class MyPpt(Slide, MovingCameraScene):
         self.next_slide()
 
         self.play(FadeOut(vec,label,plane))
+        self.play(
+            self.camera.frame.animate.set(width=14).move_to(Dot(plane.n2p(0+0j))),
+            run_time=2
+        )
 
     def show_fft(self):
         tmptex = MathTex("f(X) = ")
@@ -617,9 +636,13 @@ class MyPpt(Slide, MovingCameraScene):
         head.move_to(TOP)
         self.play(Write(m))
 
+        head = MathTex('M_4').scale(3.0).set_color(RED)
+        head.move_to(TOP)
+        self.play(Write(head))
+
         self.next_slide()
 
-        self.play(FadeOut(m))
+        self.play(FadeOut(m, head))
         self.play(Write(VGroup(mat, vec)))
 
         self.next_slide()
@@ -629,7 +652,6 @@ class MyPpt(Slide, MovingCameraScene):
         head = MathTex('M_4 W_e').scale(3.0).set_color(RED)
         head.move_to(TOP)
         self.play(Write(head))
-
 
         self.next_slide()
 
@@ -653,3 +675,10 @@ class MyPpt(Slide, MovingCameraScene):
 
         FadeOut(mat)
         hb0 = SurroundingRectangle(vec, color=BLUE, buff=0.1)
+
+        self.next_slide()
+        FadeOut(VGroup(mat, vec))
+
+        self.next_slide()
+
+        self.next_slide()
