@@ -685,10 +685,14 @@ class MyPpt(Slide, MovingCameraScene):
         mat = MobjectMatrix(data).scale(0.7)
         data = [[MathTex("A_e")],[MathTex("A_o")]]
         vec = MobjectMatrix(data).scale(0.7)
+        vec.next_to(mat)
+        VGroup(mat, vec).center()
+
+        self.play(Write(VGroup(mat, vec)))
 
         self.next_slide()
 
-        img = ImageMobject(f"./assets/qr.png")
-        self.play(img)
+        img = ImageMobject(f"./assets/qr.png").scale(3)
+        self.play(FadeIn(img))
 
         self.next_slide()
