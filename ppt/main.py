@@ -673,11 +673,11 @@ class MyPpt(Slide, MovingCameraScene):
 
         self.next_slide()
 
-        FadeOut(mat)
+        self.play(FadeOut(mat))
         hb0 = SurroundingRectangle(vec, color=BLUE, buff=0.1)
 
         self.next_slide()
-        FadeOut(VGroup(mat, vec))
+        self.play(FadeOut(VGroup(mat, vec)))
 
         self.next_slide()
 
